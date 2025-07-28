@@ -1,0 +1,1310 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyOQAHKnarV+5czxjraphB2k",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Drowser2430/NEURAL-NETWORK-OPTIMIZATION/blob/main/assignment%205.ipynb%20\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 5,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 77
+        },
+        "id": "ph21teiF03Sg",
+        "outputId": "0af5a5b3-7351-42e4-ce94-2c741959e40a"
+      },
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ],
+            "text/html": [
+              "\n",
+              "     <input type=\"file\" id=\"files-a89b25e1-ee2a-4f2d-83ff-0717b69d26cb\" name=\"files[]\" multiple disabled\n",
+              "        style=\"border:none\" />\n",
+              "     <output id=\"result-a89b25e1-ee2a-4f2d-83ff-0717b69d26cb\">\n",
+              "      Upload widget is only available when the cell has been executed in the\n",
+              "      current browser session. Please rerun this cell to enable.\n",
+              "      </output>\n",
+              "      <script>// Copyright 2017 Google LLC\n",
+              "//\n",
+              "// Licensed under the Apache License, Version 2.0 (the \"License\");\n",
+              "// you may not use this file except in compliance with the License.\n",
+              "// You may obtain a copy of the License at\n",
+              "//\n",
+              "//      http://www.apache.org/licenses/LICENSE-2.0\n",
+              "//\n",
+              "// Unless required by applicable law or agreed to in writing, software\n",
+              "// distributed under the License is distributed on an \"AS IS\" BASIS,\n",
+              "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n",
+              "// See the License for the specific language governing permissions and\n",
+              "// limitations under the License.\n",
+              "\n",
+              "/**\n",
+              " * @fileoverview Helpers for google.colab Python module.\n",
+              " */\n",
+              "(function(scope) {\n",
+              "function span(text, styleAttributes = {}) {\n",
+              "  const element = document.createElement('span');\n",
+              "  element.textContent = text;\n",
+              "  for (const key of Object.keys(styleAttributes)) {\n",
+              "    element.style[key] = styleAttributes[key];\n",
+              "  }\n",
+              "  return element;\n",
+              "}\n",
+              "\n",
+              "// Max number of bytes which will be uploaded at a time.\n",
+              "const MAX_PAYLOAD_SIZE = 100 * 1024;\n",
+              "\n",
+              "function _uploadFiles(inputId, outputId) {\n",
+              "  const steps = uploadFilesStep(inputId, outputId);\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  // Cache steps on the outputElement to make it available for the next call\n",
+              "  // to uploadFilesContinue from Python.\n",
+              "  outputElement.steps = steps;\n",
+              "\n",
+              "  return _uploadFilesContinue(outputId);\n",
+              "}\n",
+              "\n",
+              "// This is roughly an async generator (not supported in the browser yet),\n",
+              "// where there are multiple asynchronous steps and the Python side is going\n",
+              "// to poll for completion of each step.\n",
+              "// This uses a Promise to block the python side on completion of each step,\n",
+              "// then passes the result of the previous step as the input to the next step.\n",
+              "function _uploadFilesContinue(outputId) {\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  const steps = outputElement.steps;\n",
+              "\n",
+              "  const next = steps.next(outputElement.lastPromiseValue);\n",
+              "  return Promise.resolve(next.value.promise).then((value) => {\n",
+              "    // Cache the last promise value to make it available to the next\n",
+              "    // step of the generator.\n",
+              "    outputElement.lastPromiseValue = value;\n",
+              "    return next.value.response;\n",
+              "  });\n",
+              "}\n",
+              "\n",
+              "/**\n",
+              " * Generator function which is called between each async step of the upload\n",
+              " * process.\n",
+              " * @param {string} inputId Element ID of the input file picker element.\n",
+              " * @param {string} outputId Element ID of the output display.\n",
+              " * @return {!Iterable<!Object>} Iterable of next steps.\n",
+              " */\n",
+              "function* uploadFilesStep(inputId, outputId) {\n",
+              "  const inputElement = document.getElementById(inputId);\n",
+              "  inputElement.disabled = false;\n",
+              "\n",
+              "  const outputElement = document.getElementById(outputId);\n",
+              "  outputElement.innerHTML = '';\n",
+              "\n",
+              "  const pickedPromise = new Promise((resolve) => {\n",
+              "    inputElement.addEventListener('change', (e) => {\n",
+              "      resolve(e.target.files);\n",
+              "    });\n",
+              "  });\n",
+              "\n",
+              "  const cancel = document.createElement('button');\n",
+              "  inputElement.parentElement.appendChild(cancel);\n",
+              "  cancel.textContent = 'Cancel upload';\n",
+              "  const cancelPromise = new Promise((resolve) => {\n",
+              "    cancel.onclick = () => {\n",
+              "      resolve(null);\n",
+              "    };\n",
+              "  });\n",
+              "\n",
+              "  // Wait for the user to pick the files.\n",
+              "  const files = yield {\n",
+              "    promise: Promise.race([pickedPromise, cancelPromise]),\n",
+              "    response: {\n",
+              "      action: 'starting',\n",
+              "    }\n",
+              "  };\n",
+              "\n",
+              "  cancel.remove();\n",
+              "\n",
+              "  // Disable the input element since further picks are not allowed.\n",
+              "  inputElement.disabled = true;\n",
+              "\n",
+              "  if (!files) {\n",
+              "    return {\n",
+              "      response: {\n",
+              "        action: 'complete',\n",
+              "      }\n",
+              "    };\n",
+              "  }\n",
+              "\n",
+              "  for (const file of files) {\n",
+              "    const li = document.createElement('li');\n",
+              "    li.append(span(file.name, {fontWeight: 'bold'}));\n",
+              "    li.append(span(\n",
+              "        `(${file.type || 'n/a'}) - ${file.size} bytes, ` +\n",
+              "        `last modified: ${\n",
+              "            file.lastModifiedDate ? file.lastModifiedDate.toLocaleDateString() :\n",
+              "                                    'n/a'} - `));\n",
+              "    const percent = span('0% done');\n",
+              "    li.appendChild(percent);\n",
+              "\n",
+              "    outputElement.appendChild(li);\n",
+              "\n",
+              "    const fileDataPromise = new Promise((resolve) => {\n",
+              "      const reader = new FileReader();\n",
+              "      reader.onload = (e) => {\n",
+              "        resolve(e.target.result);\n",
+              "      };\n",
+              "      reader.readAsArrayBuffer(file);\n",
+              "    });\n",
+              "    // Wait for the data to be ready.\n",
+              "    let fileData = yield {\n",
+              "      promise: fileDataPromise,\n",
+              "      response: {\n",
+              "        action: 'continue',\n",
+              "      }\n",
+              "    };\n",
+              "\n",
+              "    // Use a chunked sending to avoid message size limits. See b/62115660.\n",
+              "    let position = 0;\n",
+              "    do {\n",
+              "      const length = Math.min(fileData.byteLength - position, MAX_PAYLOAD_SIZE);\n",
+              "      const chunk = new Uint8Array(fileData, position, length);\n",
+              "      position += length;\n",
+              "\n",
+              "      const base64 = btoa(String.fromCharCode.apply(null, chunk));\n",
+              "      yield {\n",
+              "        response: {\n",
+              "          action: 'append',\n",
+              "          file: file.name,\n",
+              "          data: base64,\n",
+              "        },\n",
+              "      };\n",
+              "\n",
+              "      let percentDone = fileData.byteLength === 0 ?\n",
+              "          100 :\n",
+              "          Math.round((position / fileData.byteLength) * 100);\n",
+              "      percent.textContent = `${percentDone}% done`;\n",
+              "\n",
+              "    } while (position < fileData.byteLength);\n",
+              "  }\n",
+              "\n",
+              "  // All done.\n",
+              "  yield {\n",
+              "    response: {\n",
+              "      action: 'complete',\n",
+              "    }\n",
+              "  };\n",
+              "}\n",
+              "\n",
+              "scope.google = scope.google || {};\n",
+              "scope.google.colab = scope.google.colab || {};\n",
+              "scope.google.colab._files = {\n",
+              "  _uploadFiles,\n",
+              "  _uploadFilesContinue,\n",
+              "};\n",
+              "})(self);\n",
+              "</script> "
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Saving amazon_cells_labelled.txt to amazon_cells_labelled.txt\n"
+          ]
+        }
+      ],
+      "source": [
+        "from google.colab import files\n",
+        "\n",
+        "uploaded = files.upload()\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "\n",
+        "df = pd.read_csv(\"amazon_cells_labelled.txt\", sep=\"\\t\", header=None)\n",
+        "df.columns = ['sentence', 'label']\n",
+        "\n",
+        "df.head()\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "id": "50H4JvTL2OMj",
+        "outputId": "3d799b8b-6186-43bf-ea4d-f22f36088af4"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "                                            sentence  label\n",
+              "0  So there is no way for me to plug it in here i...      0\n",
+              "1                        Good case, Excellent value.      1\n",
+              "2                             Great for the jawbone.      1\n",
+              "3  Tied to charger for conversations lasting more...      0\n",
+              "4                                  The mic is great.      1"
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-5d08908b-717f-4a6c-a61d-cb173af57bfd\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>sentence</th>\n",
+              "      <th>label</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>So there is no way for me to plug it in here i...</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>Good case, Excellent value.</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>Great for the jawbone.</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>Tied to charger for conversations lasting more...</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>The mic is great.</td>\n",
+              "      <td>1</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-5d08908b-717f-4a6c-a61d-cb173af57bfd')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-5d08908b-717f-4a6c-a61d-cb173af57bfd button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-5d08908b-717f-4a6c-a61d-cb173af57bfd');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "    <div id=\"df-08e0c4cd-46fc-4021-a97b-03e71433d666\">\n",
+              "      <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-08e0c4cd-46fc-4021-a97b-03e71433d666')\"\n",
+              "                title=\"Suggest charts\"\n",
+              "                style=\"display:none;\">\n",
+              "\n",
+              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "     width=\"24px\">\n",
+              "    <g>\n",
+              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
+              "    </g>\n",
+              "</svg>\n",
+              "      </button>\n",
+              "\n",
+              "<style>\n",
+              "  .colab-df-quickchart {\n",
+              "      --bg-color: #E8F0FE;\n",
+              "      --fill-color: #1967D2;\n",
+              "      --hover-bg-color: #E2EBFA;\n",
+              "      --hover-fill-color: #174EA6;\n",
+              "      --disabled-fill-color: #AAA;\n",
+              "      --disabled-bg-color: #DDD;\n",
+              "  }\n",
+              "\n",
+              "  [theme=dark] .colab-df-quickchart {\n",
+              "      --bg-color: #3B4455;\n",
+              "      --fill-color: #D2E3FC;\n",
+              "      --hover-bg-color: #434B5C;\n",
+              "      --hover-fill-color: #FFFFFF;\n",
+              "      --disabled-bg-color: #3B4455;\n",
+              "      --disabled-fill-color: #666;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart {\n",
+              "    background-color: var(--bg-color);\n",
+              "    border: none;\n",
+              "    border-radius: 50%;\n",
+              "    cursor: pointer;\n",
+              "    display: none;\n",
+              "    fill: var(--fill-color);\n",
+              "    height: 32px;\n",
+              "    padding: 0;\n",
+              "    width: 32px;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart:hover {\n",
+              "    background-color: var(--hover-bg-color);\n",
+              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "    fill: var(--button-hover-fill-color);\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart-complete:disabled,\n",
+              "  .colab-df-quickchart-complete:disabled:hover {\n",
+              "    background-color: var(--disabled-bg-color);\n",
+              "    fill: var(--disabled-fill-color);\n",
+              "    box-shadow: none;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-spinner {\n",
+              "    border: 2px solid var(--fill-color);\n",
+              "    border-color: transparent;\n",
+              "    border-bottom-color: var(--fill-color);\n",
+              "    animation:\n",
+              "      spin 1s steps(1) infinite;\n",
+              "  }\n",
+              "\n",
+              "  @keyframes spin {\n",
+              "    0% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "      border-left-color: var(--fill-color);\n",
+              "    }\n",
+              "    20% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    30% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    40% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    60% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    80% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "    90% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "  }\n",
+              "</style>\n",
+              "\n",
+              "      <script>\n",
+              "        async function quickchart(key) {\n",
+              "          const quickchartButtonEl =\n",
+              "            document.querySelector('#' + key + ' button');\n",
+              "          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
+              "          quickchartButtonEl.classList.add('colab-df-spinner');\n",
+              "          try {\n",
+              "            const charts = await google.colab.kernel.invokeFunction(\n",
+              "                'suggestCharts', [key], {});\n",
+              "          } catch (error) {\n",
+              "            console.error('Error during call to suggestCharts:', error);\n",
+              "          }\n",
+              "          quickchartButtonEl.classList.remove('colab-df-spinner');\n",
+              "          quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
+              "        }\n",
+              "        (() => {\n",
+              "          let quickchartButtonEl =\n",
+              "            document.querySelector('#df-08e0c4cd-46fc-4021-a97b-03e71433d666 button');\n",
+              "          quickchartButtonEl.style.display =\n",
+              "            google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "        })();\n",
+              "      </script>\n",
+              "    </div>\n",
+              "\n",
+              "    </div>\n",
+              "  </div>\n"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "dataframe",
+              "variable_name": "df",
+              "summary": "{\n  \"name\": \"df\",\n  \"rows\": 1000,\n  \"fields\": [\n    {\n      \"column\": \"sentence\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 990,\n        \"samples\": [\n          \"The range is very decent, I've been able to roam around my house with the phone in the living room with no reception/sound quality issues.\",\n          \"The reception is excellent!\",\n          \"I would have given no star if I was able.\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"label\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          1,\n          0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+            }
+          },
+          "metadata": {},
+          "execution_count": 6
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import nltk\n",
+        "nltk.download('stopwords')\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Z0MiwwFv6uM4",
+        "outputId": "0d34ecf6-9ebb-451a-ea2c-2895aa5c5f16"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "[nltk_data] Downloading package stopwords to /root/nltk_data...\n",
+            "[nltk_data]   Unzipping corpora/stopwords.zip.\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "True"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 7
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import nltk\n",
+        "nltk.download('wordnet')\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "V_FKjdBRcyut",
+        "outputId": "ff845e28-6754-465c-f188-4c16e516313a"
+      },
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "[nltk_data] Downloading package wordnet to /root/nltk_data...\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "True"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 8
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import re\n",
+        "from nltk.corpus import stopwords\n",
+        "from nltk.stem import WordNetLemmatizer\n",
+        "\n",
+        "stop_words = set(stopwords.words('english'))\n",
+        "lemmatizer = WordNetLemmatizer()\n",
+        "\n",
+        "def preprocess(text):\n",
+        "    text = text.lower()\n",
+        "    text = re.sub(r'[^a-zA-Z\\s]', '', text)\n",
+        "    tokens = text.split()  # Simple split instead of word_tokenize\n",
+        "    tokens = [word for word in tokens if word not in stop_words]\n",
+        "    tokens = [lemmatizer.lemmatize(word) for word in tokens]\n",
+        "    return ' '.join(tokens)\n",
+        "\n",
+        "df['clean_sentence'] = df['sentence'].apply(preprocess)\n",
+        "df[['sentence', 'clean_sentence']].head()\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "id": "CbghdWxFcKIx",
+        "outputId": "2c1826ca-e565-4c7d-eeac-070ed6fe8f4f"
+      },
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "                                            sentence  \\\n",
+              "0  So there is no way for me to plug it in here i...   \n",
+              "1                        Good case, Excellent value.   \n",
+              "2                             Great for the jawbone.   \n",
+              "3  Tied to charger for conversations lasting more...   \n",
+              "4                                  The mic is great.   \n",
+              "\n",
+              "                                      clean_sentence  \n",
+              "0                     way plug u unless go converter  \n",
+              "1                          good case excellent value  \n",
+              "2                                      great jawbone  \n",
+              "3  tied charger conversation lasting minutesmajor...  \n",
+              "4                                          mic great  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-961c6e32-f10c-4ed2-b687-68bc6c5feb09\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>sentence</th>\n",
+              "      <th>clean_sentence</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>So there is no way for me to plug it in here i...</td>\n",
+              "      <td>way plug u unless go converter</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>Good case, Excellent value.</td>\n",
+              "      <td>good case excellent value</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>Great for the jawbone.</td>\n",
+              "      <td>great jawbone</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>Tied to charger for conversations lasting more...</td>\n",
+              "      <td>tied charger conversation lasting minutesmajor...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>The mic is great.</td>\n",
+              "      <td>mic great</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-961c6e32-f10c-4ed2-b687-68bc6c5feb09')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-961c6e32-f10c-4ed2-b687-68bc6c5feb09 button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-961c6e32-f10c-4ed2-b687-68bc6c5feb09');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "    <div id=\"df-59afeb3b-a022-487f-b7ec-3cae042a5a08\">\n",
+              "      <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-59afeb3b-a022-487f-b7ec-3cae042a5a08')\"\n",
+              "                title=\"Suggest charts\"\n",
+              "                style=\"display:none;\">\n",
+              "\n",
+              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "     width=\"24px\">\n",
+              "    <g>\n",
+              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
+              "    </g>\n",
+              "</svg>\n",
+              "      </button>\n",
+              "\n",
+              "<style>\n",
+              "  .colab-df-quickchart {\n",
+              "      --bg-color: #E8F0FE;\n",
+              "      --fill-color: #1967D2;\n",
+              "      --hover-bg-color: #E2EBFA;\n",
+              "      --hover-fill-color: #174EA6;\n",
+              "      --disabled-fill-color: #AAA;\n",
+              "      --disabled-bg-color: #DDD;\n",
+              "  }\n",
+              "\n",
+              "  [theme=dark] .colab-df-quickchart {\n",
+              "      --bg-color: #3B4455;\n",
+              "      --fill-color: #D2E3FC;\n",
+              "      --hover-bg-color: #434B5C;\n",
+              "      --hover-fill-color: #FFFFFF;\n",
+              "      --disabled-bg-color: #3B4455;\n",
+              "      --disabled-fill-color: #666;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart {\n",
+              "    background-color: var(--bg-color);\n",
+              "    border: none;\n",
+              "    border-radius: 50%;\n",
+              "    cursor: pointer;\n",
+              "    display: none;\n",
+              "    fill: var(--fill-color);\n",
+              "    height: 32px;\n",
+              "    padding: 0;\n",
+              "    width: 32px;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart:hover {\n",
+              "    background-color: var(--hover-bg-color);\n",
+              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "    fill: var(--button-hover-fill-color);\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart-complete:disabled,\n",
+              "  .colab-df-quickchart-complete:disabled:hover {\n",
+              "    background-color: var(--disabled-bg-color);\n",
+              "    fill: var(--disabled-fill-color);\n",
+              "    box-shadow: none;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-spinner {\n",
+              "    border: 2px solid var(--fill-color);\n",
+              "    border-color: transparent;\n",
+              "    border-bottom-color: var(--fill-color);\n",
+              "    animation:\n",
+              "      spin 1s steps(1) infinite;\n",
+              "  }\n",
+              "\n",
+              "  @keyframes spin {\n",
+              "    0% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "      border-left-color: var(--fill-color);\n",
+              "    }\n",
+              "    20% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    30% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    40% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    60% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    80% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "    90% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "  }\n",
+              "</style>\n",
+              "\n",
+              "      <script>\n",
+              "        async function quickchart(key) {\n",
+              "          const quickchartButtonEl =\n",
+              "            document.querySelector('#' + key + ' button');\n",
+              "          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
+              "          quickchartButtonEl.classList.add('colab-df-spinner');\n",
+              "          try {\n",
+              "            const charts = await google.colab.kernel.invokeFunction(\n",
+              "                'suggestCharts', [key], {});\n",
+              "          } catch (error) {\n",
+              "            console.error('Error during call to suggestCharts:', error);\n",
+              "          }\n",
+              "          quickchartButtonEl.classList.remove('colab-df-spinner');\n",
+              "          quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
+              "        }\n",
+              "        (() => {\n",
+              "          let quickchartButtonEl =\n",
+              "            document.querySelector('#df-59afeb3b-a022-487f-b7ec-3cae042a5a08 button');\n",
+              "          quickchartButtonEl.style.display =\n",
+              "            google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "        })();\n",
+              "      </script>\n",
+              "    </div>\n",
+              "\n",
+              "    </div>\n",
+              "  </div>\n"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "dataframe",
+              "summary": "{\n  \"name\": \"df[['sentence', 'clean_sentence']]\",\n  \"rows\": 5,\n  \"fields\": [\n    {\n      \"column\": \"sentence\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 5,\n        \"samples\": [\n          \"Good case, Excellent value.\",\n          \"The mic is great.\",\n          \"Great for the jawbone.\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"clean_sentence\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 5,\n        \"samples\": [\n          \"good case excellent value\",\n          \"mic great\",\n          \"great jawbone\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+            }
+          },
+          "metadata": {},
+          "execution_count": 9
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Text preprocessing was used to clean and standardize the input data before training the model. This involved lowercasing all text, removing punctuation and non-alphabetic characters, filtering out stopwords, and applying lemmatization to reduce words to their base form. These steps simplified the text while preserving important content, making it easier for the model to learn patterns and predict sentiment accurately. The before-and-after examples show that the preprocessing removed unnecessary words and punctuation while keeping key terms like “value,” “great,” and “charger” intact.\n",
+        "\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "bcYQBnrS5M-u"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer\n",
+        "\n",
+        "# Initialize vectorizers\n",
+        "count_vec = CountVectorizer()\n",
+        "tfidf_vec = TfidfVectorizer()\n",
+        "\n",
+        "# Apply vectorizers to cleaned sentences\n",
+        "X_cv = count_vec.fit_transform(df['clean_sentence'])\n",
+        "X_tfidf = tfidf_vec.fit_transform(df['clean_sentence'])\n",
+        "\n",
+        "# Store the labels\n",
+        "y = df['label'].values\n",
+        "\n",
+        "# Display shapes of the feature matrices\n",
+        "print(\"Bag of Words shape:\", X_cv.shape)\n",
+        "print(\"TF-IDF shape:\", X_tfidf.shape)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "VeR3aAh6fV-G",
+        "outputId": "0f3e5553-baa8-4898-984e-8e129c609882"
+      },
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Bag of Words shape: (1000, 1616)\n",
+            "TF-IDF shape: (1000, 1616)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "# Class distribution\n",
+        "df['label'].value_counts().plot(kind='bar', color=['skyblue', 'salmon'])\n",
+        "plt.title(\"Sentiment Class Distribution\")\n",
+        "plt.xlabel(\"Sentiment (0 = Negative, 1 = Positive)\")\n",
+        "plt.ylabel(\"Count\")\n",
+        "plt.show()\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 467
+        },
+        "id": "cG88Mf6QYoOh",
+        "outputId": "4d31fe07-dfd2-4406-e3b0-f2bb9ed7bc41"
+      },
+      "execution_count": 13,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<Figure size 640x480 with 1 Axes>"
+            ],
+            "image/png": "iVBORw0KGgoAAAANSUhEUgAAAjsAAAHCCAYAAAAJowgXAAAAOnRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjEwLjAsIGh0dHBzOi8vbWF0cGxvdGxpYi5vcmcvlHJYcgAAAAlwSFlzAAAPYQAAD2EBqD+naQAAQGJJREFUeJzt3XlcFuX+//E3sm83uLBoKm65YK64UZpLKhmVFlZ6SHHJOh60css4R0UttWOltmh26qRWeuxU2mKaman1U9zTXMrUNE0F3ABXQLh+f/TlPt4CpgjcOL2ej8f9eDjXXDPzmblv5M3MNXO7GGOMAAAALKqcswsAAAAoSYQdAABgaYQdAABgaYQdAABgaYQdAABgaYQdAABgaYQdAABgaYQdAABgaYQdAABgaYQd4CbQr18/1ahRw9llOFWHDh3UoUMHZ5dxw+bOnSsXFxcdPHiwxLd15efm4MGDcnFx0UsvvVTi25ak8ePHy8XFpVS2BVwNYQe4wo4dO9SzZ0+FhYXJy8tLt9xyi7p06aLXXnutRLd79OhRjR8/Xtu2bSvR7ZSU8+fPa/z48Vq9evV1LZeSkqKRI0eqfv368vHxka+vryIiIvT8888rLS2tRGotLqtXr5aLi4v95enpqZCQEHXo0EGTJ0/W8ePHi2U7RT22paEs1wbkceG7sYD/WbdunTp27Kjq1asrLi5OoaGhOnz4sNavX6/9+/dr3759JbbtzZs3q2XLlpozZ4769evnMC87O1u5ubny9PQsse3fqBMnTigoKEiJiYkaP378NS2zadMm3XPPPTp79qweffRRRURESPr9WCxcuFC33367vvrqK0myn9UpS79UV69erY4dO+rJJ59Uy5YtlZOTo+PHj2vdunX6/PPPFRAQoP/+97/q1KmTfZmcnBxlZ2fL09Pzms96FOXYSvk/NwcPHlTNmjX14osvauTIkde1r0Wp7dKlS7p06ZK8vLyKZVtAUbk5uwCgLJk0aZICAgK0adMmBQYGOsxLTU11TlGS3N3dnbbtkpKWlqYHHnhArq6u+v7771W/fn2H+ZMmTdJbb73lpOquT7t27dSzZ0+Htu3bt6tr166KiYnR7t27VblyZUmSq6urXF1dS7Sec+fOydfX1+mfGzc3N7m58WsGzsdlLOAy+/fvV8OGDfMFHUkKDg7O1/b+++8rIiJC3t7eqlChgnr16qXDhw879OnQoYNuu+027d69Wx07dpSPj49uueUWTZ061d5n9erVatmypSSpf//+9ssic+fOlXT1sRczZ85UrVq15OPjo65du+rw4cMyxui5555T1apV5e3tre7du+vUqVP56l+2bJnatWsnX19f+fv7Kzo6Wrt27XLo069fP/n5+enIkSPq0aOH/Pz8FBQUpJEjRyonJ8deT1BQkCRpwoQJ9vqvdhbizTff1JEjRzRt2rR8QUeSQkJCNGbMmEKXz8rK0rhx4xQREaGAgAD5+vqqXbt2WrVqVb6+CxcuVEREhPz9/WWz2dSoUSO98sor9vnZ2dmaMGGCbr31Vnl5ealixYpq27atVqxYUej2/0iTJk00Y8YMpaWl6fXXX7e3FzRmZ/PmzYqKilKlSpXk7e2tmjVrasCAAZL++NjmvT/79+/XPffcI39/f8XGxtrnFTbWa/r06QoLC5O3t7fat2+vnTt3OswvbIzU5ev8o9oKGrNz6dIlPffcc6pdu7Y8PT1Vo0YN/f3vf1dmZqZDvxo1aujee+/V//t//0+tWrWSl5eXatWqpXfffbfgAw5cBWEHuExYWJi2bNmS7z/+gkyaNEl9+/bVrbfeqmnTpunpp5/WypUrdeedd+Yba3L69GndfffdatKkiV5++WXVr19fo0eP1rJlyyRJDRo00MSJEyVJjz/+uN577z299957uvPOO69aw/z58zVr1iwNHTpUI0aM0Jo1a/Twww9rzJgx+vLLLzV69Gg9/vjj+vzzz/NdtnjvvfcUHR0tPz8//fOf/9TYsWO1e/dutW3bNt/g2ZycHEVFRalixYp66aWX1L59e7388sv617/+JUkKCgrSG2+8IUl64IEH7PU/+OCDhdb+2WefydvbO98ZkWuVkZGht99+Wx06dNA///lPjR8/XsePH1dUVJTDuKcVK1aod+/eKl++vP75z3/qhRdeUIcOHbR27Vp7n/Hjx2vChAnq2LGjXn/9df3jH/9Q9erVtXXr1iLVlqdnz57y9va2X4orSGpqqrp27aqDBw/q2Wef1WuvvabY2FitX79e0rUd20uXLikqKkrBwcF66aWXFBMTc9W63n33Xb366quKj49XQkKCdu7cqU6dOiklJeW69q8o7/tjjz2mcePGqXnz5po+fbrat2+vKVOmqFevXvn67tu3Tz179lSXLl308ssvq3z58urXr1++QA78IQPA7quvvjKurq7G1dXVREZGmmeeecYsX77cZGVlOfQ7ePCgcXV1NZMmTXJo37Fjh3Fzc3Nob9++vZFk3n33XXtbZmamCQ0NNTExMfa2TZs2GUlmzpw5+eqKi4szYWFh9ukDBw4YSSYoKMikpaXZ2xMSEowk06RJE5OdnW1v7927t/Hw8DAXL140xhhz5swZExgYaAYNGuSwneTkZBMQEODQHhcXZySZiRMnOvRt1qyZiYiIsE8fP37cSDKJiYn56i9I+fLlTZMmTa6przG/H8f27dvbpy9dumQyMzMd+pw+fdqEhISYAQMG2NueeuopY7PZzKVLlwpdd5MmTUx0dPQ115Jn1apVRpL58MMPr7ru8uXL26fnzJljJJkDBw4YY4xZvHixkWQ2bdpU6Dqudmzz3p9nn322wHkFfW68vb3Nb7/9Zm/fsGGDkWSGDRtmb7vyeBe2zqvVlpiYaC7/NbNt2zYjyTz22GMO/UaOHGkkmW+++cbeFhYWZiSZb7/91t6WmppqPD09zYgRI/JtC7gazuwAl+nSpYuSkpJ0//33a/v27Zo6daqioqJ0yy236LPPPrP3W7RokXJzc/Xwww/rxIkT9ldoaKhuvfXWfJdS/Pz89Oijj9qnPTw81KpVK/3yyy83VO9DDz2kgIAA+3Tr1q0lSY8++qjDWInWrVsrKytLR44ckfT72Y60tDT17t3boX5XV1e1bt26wEtBf/3rXx2m27Vrd0P1Z2RkyN/fv8jLu7q6ysPDQ5KUm5urU6dO6dKlS2rRooXDGZnAwECdO3fuqpekAgMDtWvXLu3du7fI9RTGz89PZ86cueq2JWnJkiXKzs4u8nYGDx58zX179OihW265xT7dqlUrtW7dWkuXLi3y9q9F3vqHDx/u0D5ixAhJ0hdffOHQHh4ernbt2tmng4KCVK9evRv+ucGfD2EHuELLli21aNEinT59Whs3blRCQoLOnDmjnj17avfu3ZKkvXv3yhijW2+9VUFBQQ6vH3/8Md9g5qpVq+Ybu1C+fHmdPn36hmqtXr26w3Re8KlWrVqB7Xnby/ul3qlTp3z1f/XVV/nq9/Lyso/NKK76bTbbVUPAtZg3b54aN25sH2cTFBSkL774Qunp6fY+f/vb31S3bl1169ZNVatW1YABA/Tll186rGfixIlKS0tT3bp11ahRI40aNUo//PDDDdWW5+zZs1cNde3bt1dMTIwmTJigSpUqqXv37pozZ06+MSxX4+bmpqpVq15z/1tvvTVfW926dUv82T+//vqrypUrpzp16ji0h4aGKjAwUL/++qtD+5Wfb6l4fm7w58MweaAQHh4eatmypVq2bKm6deuqf//++vDDD5WYmKjc3Fy5uLho2bJlBd5Z4+fn5zBd2N035gaf/FDYev9oe7m5uZJ+H7cTGhqar9+Vd9CUxN1D9evX17Zt25SVlWU/Q3M93n//ffXr1089evTQqFGjFBwcLFdXV02ZMkX79++39wsODta2bdu0fPlyLVu2TMuWLdOcOXPUt29fzZs3T5J05513av/+/fr000/11Vdf6e2339b06dM1e/ZsPfbYY0Xex+zsbP3888+67bbbCu3j4uKijz76SOvXr9fnn3+u5cuXa8CAAXr55Ze1fv36fJ+lgnh6eqpcueL929XFxaXAz2feoPQbXfe1KKmfG/z5EHaAa9CiRQtJ0rFjxyRJtWvXljFGNWvWVN26dYtlG6X5pNnatWtL+j0IdO7cuVjWeb3133fffUpKStLHH3+s3r17X/f2PvroI9WqVUuLFi1y2HZiYmK+vh4eHrrvvvt03333KTc3V3/729/05ptvauzYsfazDBUqVFD//v3Vv39/nT17VnfeeafGjx9/Q2Hno48+0oULFxQVFfWHfdu0aaM2bdpo0qRJWrBggWJjY7Vw4UI99thjxf7ZKOhy3c8//+xw51b58uULvFx05dmX66ktLCxMubm52rt3rxo0aGBvT0lJUVpamsLCwq55XcD14DIWcJlVq1YV+Fdj3liDevXqSZIefPBBubq6asKECfn6G2N08uTJ6962r6+vJJXKU4OjoqJks9k0efLkAseJFOXJvz4+PpKuvf6//vWvqly5skaMGKGff/453/zU1FQ9//zzhS6f91f/5cd/w4YNSkpKcuh35XtRrlw5NW7cWJLsl4qu7OPn56c6depc16WkK23fvl1PP/20ypcvr/j4+EL7nT59Ot9nqGnTpg71Xe+x/SOffPKJffyWJG3cuFEbNmxQt27d7G21a9fWTz/95PBZ2L59u8NdbNdb2z333CNJmjFjhkP7tGnTJEnR0dHXtR/AteLMDnCZoUOH6vz583rggQdUv359ZWVlad26dfrggw9Uo0YN9e/fX9Lv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iLKyspSWluawXEpKikJDQyVJoaGh+e7OypvO61MQT09P2Ww2hxcAALAmp4Wdu+66Szt27NC2bdvsrxYtWig2Ntb+b3d3d61cudK+zJ49e3To0CFFRkZKkiIjI7Vjxw6lpqba+6xYsUI2m03h4eGlvk8AAKDscdqYHX9/f912220Obb6+vqpYsaK9feDAgRo+fLgqVKggm82moUOHKjIyUm3atJEkde3aVeHh4erTp4+mTp2q5ORkjRkzRvHx8fL09Cz1fQIAAGWPUwco/5Hp06erXLlyiomJUWZmpqKiojRr1iz7fFdXVy1ZskSDBw9WZGSkfH19FRcXp4kTJzqxagAAUJaUqbCzevVqh2kvLy/NnDlTM2fOLHSZsLAwLV26tIQrAwAANyunP2cHAACgJBF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApTk17Lzxxhtq3LixbDabbDabIiMjtWzZMvv8ixcvKj4+XhUrVpSfn59iYmKUkpLisI5Dhw4pOjpaPj4+Cg4O1qhRo3Tp0qXS3hUAAFBGOTXsVK1aVS+88IK2bNmizZs3q1OnTurevbt27dolSRo2bJg+//xzffjhh1qzZo2OHj2qBx980L58Tk6OoqOjlZWVpXXr1mnevHmaO3euxo0b56xdAgAAZYyLMcY4u4jLVahQQS+++KJ69uypoKAgLViwQD179pQk/fTTT2rQoIGSkpLUpk0bLVu2TPfee6+OHj2qkJAQSdLs2bM1evRoHT9+XB4eHte0zYyMDAUEBCg9PV02m63E9q0seuH7E84uAaXo2WaVnF0CSlH2hBHOLgGlyD3xZWeXUOqu9fd3mRmzk5OTo4ULF+rcuXOKjIzUli1blJ2drc6dO9v71K9fX9WrV1dSUpIkKSkpSY0aNbIHHUmKiopSRkaG/ewQAAD4c3NzdgE7duxQZGSkLl68KD8/Py1evFjh4eHatm2bPDw8FBgY6NA/JCREycnJkqTk5GSHoJM3P29eYTIzM5WZmWmfzsjIKKa9AQAAZY3Tz+zUq1dP27Zt04YNGzR48GDFxcVp9+7dJbrNKVOmKCAgwP6qVq1aiW4PAAA4j9PDjoeHh+rUqaOIiAhNmTJFTZo00SuvvKLQ0FBlZWUpLS3NoX9KSopCQ0MlSaGhofnuzsqbzutTkISEBKWnp9tfhw8fLt6dAgAAZYbTw86VcnNzlZmZqYiICLm7u2vlypX2eXv27NGhQ4cUGRkpSYqMjNSOHTuUmppq77NixQrZbDaFh4cXug1PT0/77e55LwAAYE1OHbOTkJCgbt26qXr16jpz5owWLFig1atXa/ny5QoICNDAgQM1fPhwVahQQTabTUOHDlVkZKTatGkjSeratavCw8PVp08fTZ06VcnJyRozZozi4+Pl6enpzF0DAABlhFPDTmpqqvr27atjx44pICBAjRs31vLly9WlSxdJ0vTp01WuXDnFxMQoMzNTUVFRmjVrln15V1dXLVmyRIMHD1ZkZKR8fX0VFxeniRMnOmuXAABAGVPmnrPjDDxnB38WPGfnz4Xn7Py58Jydm+A5OwAAACWBsAMAACytSGGnVq1aOnnyZL72tLQ01apV64aLAgAAKC5FCjsHDx5UTk5OvvbMzEwdOXLkhosCAAAoLtd1N9Znn31m/3fe7eF5cnJytHLlStWoUaPYigMAALhR1xV2evToIUlycXFRXFycwzx3d3fVqFFDL7/85xsNDgAAyq7rCju5ubmSpJo1a2rTpk2qVInbWAEAQNlWpIcKHjhwoLjrAAAAKBFFfoLyypUrtXLlSqWmptrP+OR55513brgwAACA4lCksDNhwgRNnDhRLVq0UOXKleXi4lLcdQEAABSLIoWd2bNna+7cuerTp09x1wMAAFCsivScnaysLN1+++3FXQsAAECxK1LYeeyxx7RgwYLirgUAAKDYFeky1sWLF/Wvf/1LX3/9tRo3bix3d3eH+dOmTSuW4gAAAG5UkcLODz/8oKZNm0qSdu7c6TCPwcoAAKAsKVLYWbVqVXHXAQAAUCKKNGYHAADgZlGkMzsdO3a86uWqb775psgFAQAAFKcihZ288Tp5srOztW3bNu3cuTPfF4QCAAA4U5HCzvTp0wtsHz9+vM6ePXtDBQEAABSnYh2z8+ijj/K9WAAAoEwp1rCTlJQkLy+v4lwlAADADSnSZawHH3zQYdoYo2PHjmnz5s0aO3ZssRQGAABQHIoUdgICAhymy5Urp3r16mnixInq2rVrsRQGAABQHIoUdubMmVPcdQAAAJSIIoWdPFu2bNGPP/4oSWrYsKGaNWtWLEUBAAAUlyKFndTUVPXq1UurV69WYGCgJCktLU0dO3bUwoULFRQUVJw1AgAAFFmR7sYaOnSozpw5o127dunUqVM6deqUdu7cqYyMDD355JPFXSMAAECRFenMzpdffqmvv/5aDRo0sLeFh4dr5syZDFAGAABlSpHO7OTm5srd3T1fu7u7u3Jzc2+4KAAAgOJSpLDTqVMnPfXUUzp69Ki97ciRIxo2bJjuuuuuYisOAADgRhUp7Lz++uvKyMhQjRo1VLt2bdWuXVs1a9ZURkaGXnvtteKuEQAAoMiKNGanWrVq2rp1q77++mv99NNPkqQGDRqoc+fOxVocAADAjbquMzvffPONwsPDlZGRIRcXF3Xp0kVDhw7V0KFD1bJlSzVs2FDfffddSdUKAABw3a4r7MyYMUODBg2SzWbLNy8gIEBPPPGEpk2bVmzFAQAA3KjrCjvbt2/X3XffXej8rl27asuWLTdcFAAAQHG5rrCTkpJS4C3nedzc3HT8+PEbLgoAAKC4XFfYueWWW7Rz585C5//www+qXLnyDRcFAABQXK4r7Nxzzz0aO3asLl68mG/ehQsXlJiYqHvvvbfYigMAALhR13Xr+ZgxY7Ro0SLVrVtXQ4YMUb169SRJP/30k2bOnKmcnBz94x//KJFCAQAAiuK6wk5ISIjWrVunwYMHKyEhQcYYSZKLi4uioqI0c+ZMhYSElEihAAAARXHdDxUMCwvT0qVLdfr0ae3bt0/GGN16660qX758SdQHAABwQ4r0BGVJKl++vFq2bFmctQAAABS7In03FgAAwM2CsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACyNsAMAACzNqWFnypQpatmypfz9/RUcHKwePXpoz549Dn0uXryo+Ph4VaxYUX5+foqJiVFKSopDn0OHDik6Olo+Pj4KDg7WqFGjdOnSpdLcFQAAUEY5NeysWbNG8fHxWr9+vVasWKHs7Gx17dpV586ds/cZNmyYPv/8c3344Ydas2aNjh49qgcffNA+PycnR9HR0crKytK6des0b948zZ07V+PGjXPGLgEAgDLGxRhjnF1EnuPHjys4OFhr1qzRnXfeqfT0dAUFBWnBggXq2bOnJOmnn35SgwYNlJSUpDZt2mjZsmW69957dfToUYWEhEiSZs+erdGjR+v48ePy8PD4w+1mZGQoICBA6enpstlsJbqPZc0L359wdgkoRc82q+TsElCKsieMcHYJKEXuiS87u4RSd62/v8vUmJ309HRJUoUKFSRJW7ZsUXZ2tjp37mzvU79+fVWvXl1JSUmSpKSkJDVq1MgedCQpKipKGRkZ2rVrV4HbyczMVEZGhsMLAABYU5kJO7m5uXr66ad1xx136LbbbpMkJScny8PDQ4GBgQ59Q0JClJycbO9zedDJm583ryBTpkxRQECA/VWtWrVi3hsAAFBWlJmwEx8fr507d2rhwoUlvq2EhASlp6fbX4cPHy7xbQIAAOdwc3YBkjRkyBAtWbJE3377rapWrWpvDw0NVVZWltLS0hzO7qSkpCg0NNTeZ+PGjQ7ry7tbK6/PlTw9PeXp6VnMewEAAMoip57ZMcZoyJAhWrx4sb755hvVrFnTYX5ERITc3d21cuVKe9uePXt06NAhRUZGSpIiIyO1Y8cOpaam2vusWLFCNptN4eHhpbMjAACgzHLqmZ34+HgtWLBAn376qfz9/e1jbAICAuTt7a2AgAANHDhQw4cPV4UKFWSz2TR06FBFRkaqTZs2kqSuXbsqPDxcffr00dSpU5WcnKwxY8YoPj6eszcAAMC5YeeNN96QJHXo0MGhfc6cOerXr58kafr06SpXrpxiYmKUmZmpqKgozZo1y97X1dVVS5Ys0eDBgxUZGSlfX1/FxcVp4sSJpbUbAACgDHNq2LmWR/x4eXlp5syZmjlzZqF9wsLCtHTp0uIsDQAAWESZuRsLAACgJBB2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApRF2AACApTk17Hz77be67777VKVKFbm4uOiTTz5xmG+M0bhx41S5cmV5e3urc+fO2rt3r0OfU6dOKTY2VjabTYGBgRo4cKDOnj1binsBAADKMqeGnXPnzqlJkyaaOXNmgfOnTp2qV199VbNnz9aGDRvk6+urqKgoXbx40d4nNjZWu3bt0ooVK7RkyRJ9++23evzxx0trFwAAQBnn5syNd+vWTd26dStwnjFGM2bM0JgxY9S9e3dJ0rvvvquQkBB98skn6tWrl3788Ud9+eWX2rRpk1q0aCFJeu2113TPPffopZdeUpUqVUptXwAAQNlUZsfsHDhwQMnJyercubO9LSAgQK1bt1ZSUpIkKSkpSYGBgfagI0mdO3dWuXLltGHDhkLXnZmZqYyMDIcXAACwpjIbdpKTkyVJISEhDu0hISH2ecnJyQoODnaY7+bmpgoVKtj7FGTKlCkKCAiwv6pVq1bM1QMAgLKizIadkpSQkKD09HT76/Dhw84uCQAAlJAyG3ZCQ0MlSSkpKQ7tKSkp9nmhoaFKTU11mH/p0iWdOnXK3qcgnp6estlsDi8AAGBNZTbs1KxZU6GhoVq5cqW9LSMjQxs2bFBkZKQkKTIyUmlpadqyZYu9zzfffKPc3Fy1bt261GsGAABlj1Pvxjp79qz27dtnnz5w4IC2bdumChUqqHr16nr66af1/PPP69Zbb1XNmjU1duxYValSRT169JAkNWjQQHfffbcGDRqk2bNnKzs7W0OG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\n"
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Visualized the distribution of sentiment labels in the dataset to assess class balance. This helps understand whether the dataset is biased toward one sentiment class.\n"
+      ],
+      "metadata": {
+        "id": "7IDFMKIWYxb4"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Used CountVectorizer and TfidfVectorizer to convert the cleaned text into numerical feature vectors. CountVectorizer creates a Bag-of-Words model based on word frequency, while TfidfVectorizer adjusts word weights based on how important each word is across all sentences. These representations are required for training machine learning or deep learning models.\n"
+      ],
+      "metadata": {
+        "id": "yF0hmN-bij-t"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.model_selection import train_test_split\n",
+        "\n",
+        "# Choose one vector representation (e.g. TF-IDF)\n",
+        "X = X_tfidf.toarray()\n",
+        "y = df['label'].values\n",
+        "\n",
+        "# Split into training and testing\n",
+        "X_train, X_test, y_train, y_test = train_test_split(\n",
+        "    X, y, test_size=0.2, random_state=42\n",
+        ")\n",
+        "\n",
+        "print(\"Training set shape:\", X_train.shape)\n",
+        "print(\"Test set shape:\", X_test.shape)\n"
+      ],
+      "metadata": {
+        "id": "jUcoAJhsioEL"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Split the data into training and testing sets using the TF-IDF vectorized features. Used an 80/20 split to separate input features (`X`) and target labels (`y`). This prepares the data for training and evaluating the deep learning model.\n"
+      ],
+      "metadata": {
+        "id": "sg7aXuJoVWjd"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from tensorflow.keras.preprocessing.text import Tokenizer\n",
+        "from tensorflow.keras.preprocessing.sequence import pad_sequences\n",
+        "from tensorflow.keras.models import Sequential\n",
+        "from tensorflow.keras.layers import Embedding, LSTM, Dense, Dropout\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "import numpy as np\n",
+        "\n",
+        "# Tokenize the cleaned sentences\n",
+        "tokenizer = Tokenizer()\n",
+        "tokenizer.fit_on_texts(df['clean_sentence'])\n",
+        "sequences = tokenizer.texts_to_sequences(df['clean_sentence'])\n",
+        "\n",
+        "# Pad sequences so they are all the same length\n",
+        "X_seq = pad_sequences(sequences, maxlen=50)\n",
+        "\n",
+        "# Labels\n",
+        "y = df['label'].values\n",
+        "\n",
+        "# Train-test split\n",
+        "X_train, X_test, y_train, y_test = train_test_split(X_seq, y, test_size=0.2, random_state=42)\n",
+        "\n",
+        "# Vocabulary size\n",
+        "vocab_size = len(tokenizer.word_index) + 1\n",
+        "\n",
+        "# Build the LSTM model\n",
+        "model = Sequential([\n",
+        "    Embedding(input_dim=vocab_size, output_dim=100, input_length=50),\n",
+        "    LSTM(64, return_sequences=False),\n",
+        "    Dropout(0.5),\n",
+        "    Dense(1, activation='sigmoid')\n",
+        "])\n",
+        "\n",
+        "model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])\n",
+        "model.summary()\n",
+        "\n",
+        "# Train the model\n",
+        "history = model.fit(X_train, y_train, epochs=5, batch_size=32, validation_split=0.2)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 487
+        },
+        "id": "LdGOKJJeTSyJ",
+        "outputId": "5c831e0b-8c08-4e49-f869-992dfd647396"
+      },
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "/usr/local/lib/python3.11/dist-packages/keras/src/layers/core/embedding.py:90: UserWarning: Argument `input_length` is deprecated. Just remove it.\n",
+            "  warnings.warn(\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "\u001b[1mModel: \"sequential\"\u001b[0m\n"
+            ],
+            "text/html": [
+              "<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"><span style=\"font-weight: bold\">Model: \"sequential\"</span>\n",
+              "</pre>\n"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓\n",
+              "┃\u001b[1m \u001b[0m\u001b[1mLayer (type)                   \u001b[0m\u001b[1m \u001b[0m┃\u001b[1m \u001b[0m\u001b[1mOutput Shape          \u001b[0m\u001b[1m \u001b[0m┃\u001b[1m \u001b[0m\u001b[1m      Param #\u001b[0m\u001b[1m \u001b[0m┃\n",
+              "┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩\n",
+              "│ embedding (\u001b[38;5;33mEmbedding\u001b[0m)           │ ?                      │   \u001b[38;5;34m0\u001b[0m (unbuilt) │\n",
+              "├─────────────────────────────────┼────────────────────────┼───────────────┤\n",
+              "│ lstm (\u001b[38;5;33mLSTM\u001b[0m)                     │ ?                      │   \u001b[38;5;34m0\u001b[0m (unbuilt) │\n",
+              "├─────────────────────────────────┼────────────────────────┼───────────────┤\n",
+              "│ dropout (\u001b[38;5;33mDropout\u001b[0m)               │ ?                      │             \u001b[38;5;34m0\u001b[0m │\n",
+              "├─────────────────────────────────┼────────────────────────┼───────────────┤\n",
+              "│ dense (\u001b[38;5;33mDense\u001b[0m)                   │ ?                      │   \u001b[38;5;34m0\u001b[0m (unbuilt) │\n",
+              "└─────────────────────────────────┴────────────────────────┴───────────────┘\n"
+            ],
+            "text/html": [
+              "<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓\n",
+              "┃<span style=\"font-weight: bold\"> Layer (type)                    </span>┃<span style=\"font-weight: bold\"> Output Shape           </span>┃<span style=\"font-weight: bold\">       Param # </span>┃\n",
+              "┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩\n",
+              "│ embedding (<span style=\"color: #0087ff; text-decoration-color: #0087ff\">Embedding</span>)           │ ?                      │   <span style=\"color: #00af00; text-decoration-color: #00af00\">0</span> (unbuilt) │\n",
+              "├─────────────────────────────────┼────────────────────────┼───────────────┤\n",
+              "│ lstm (<span style=\"color: #0087ff; text-decoration-color: #0087ff\">LSTM</span>)                     │ ?                      │   <span style=\"color: #00af00; text-decoration-color: #00af00\">0</span> (unbuilt) │\n",
+              "├─────────────────────────────────┼────────────────────────┼───────────────┤\n",
+              "│ dropout (<span style=\"color: #0087ff; text-decoration-color: #0087ff\">Dropout</span>)               │ ?                      │             <span style=\"color: #00af00; text-decoration-color: #00af00\">0</span> │\n",
+              "├─────────────────────────────────┼────────────────────────┼───────────────┤\n",
+              "│ dense (<span style=\"color: #0087ff; text-decoration-color: #0087ff\">Dense</span>)                   │ ?                      │   <span style=\"color: #00af00; text-decoration-color: #00af00\">0</span> (unbuilt) │\n",
+              "└─────────────────────────────────┴────────────────────────┴───────────────┘\n",
+              "</pre>\n"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "\u001b[1m Total params: \u001b[0m\u001b[38;5;34m0\u001b[0m (0.00 B)\n"
+            ],
+            "text/html": [
+              "<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"><span style=\"font-weight: bold\"> Total params: </span><span style=\"color: #00af00; text-decoration-color: #00af00\">0</span> (0.00 B)\n",
+              "</pre>\n"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "\u001b[1m Trainable params: \u001b[0m\u001b[38;5;34m0\u001b[0m (0.00 B)\n"
+            ],
+            "text/html": [
+              "<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"><span style=\"font-weight: bold\"> Trainable params: </span><span style=\"color: #00af00; text-decoration-color: #00af00\">0</span> (0.00 B)\n",
+              "</pre>\n"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "\u001b[1m Non-trainable params: \u001b[0m\u001b[38;5;34m0\u001b[0m (0.00 B)\n"
+            ],
+            "text/html": [
+              "<pre style=\"white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace\"><span style=\"font-weight: bold\"> Non-trainable params: </span><span style=\"color: #00af00; text-decoration-color: #00af00\">0</span> (0.00 B)\n",
+              "</pre>\n"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Epoch 1/5\n",
+            "\u001b[1m20/20\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m4s\u001b[0m 66ms/step - accuracy: 0.5490 - loss: 0.6926 - val_accuracy: 0.6687 - val_loss: 0.6890\n",
+            "Epoch 2/5\n",
+            "\u001b[1m20/20\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 68ms/step - accuracy: 0.6597 - loss: 0.6812 - val_accuracy: 0.7188 - val_loss: 0.6754\n",
+            "Epoch 3/5\n",
+            "\u001b[1m20/20\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 74ms/step - accuracy: 0.7927 - loss: 0.6448 - val_accuracy: 0.7063 - val_loss: 0.6230\n",
+            "Epoch 4/5\n",
+            "\u001b[1m20/20\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 67ms/step - accuracy: 0.8562 - loss: 0.4960 - val_accuracy: 0.7188 - val_loss: 0.5715\n",
+            "Epoch 5/5\n",
+            "\u001b[1m20/20\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m2s\u001b[0m 41ms/step - accuracy: 0.9112 - loss: 0.3052 - val_accuracy: 0.7563 - val_loss: 0.4364\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Built and trained an LSTM model using an Embedding layer followed by an LSTM layer with dropout for regularization. The input text was tokenized and padded to fixed-length sequences. The model was trained to classify sentiment using binary cross-entropy loss and evaluated on a validation split.\n"
+      ],
+      "metadata": {
+        "id": "2Z-v91l8V9BC"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score\n",
+        "\n",
+        "# Get predictions from the model\n",
+        "y_pred_prob = model.predict(X_test)\n",
+        "\n",
+        "# Convert probabilities to binary (0 or 1)\n",
+        "y_pred = (y_pred_prob > 0.5).astype(int).reshape(-1)\n",
+        "\n",
+        "# Calculate metrics\n",
+        "accuracy = accuracy_score(y_test, y_pred)\n",
+        "precision = precision_score(y_test, y_pred)\n",
+        "recall = recall_score(y_test, y_pred)\n",
+        "f1 = f1_score(y_test, y_pred)\n",
+        "\n",
+        "# Print results\n",
+        "print(\"Accuracy:\", accuracy)\n",
+        "print(\"Precision:\", precision)\n",
+        "print(\"Recall:\", recall)\n",
+        "print(\"F1-score:\", f1)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "1j0Bb0LNV8wn",
+        "outputId": "1e3e9df3-328b-46e4-bbe2-b6897a3a418d"
+      },
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "\u001b[1m7/7\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m2s\u001b[0m 115ms/step\n",
+            "Accuracy: 0.76\n",
+            "Precision: 0.7757009345794392\n",
+            "Recall: 0.7757009345794392\n",
+            "F1-score: 0.7757009345794392\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Evaluated the model's performance on the test set using classification metrics. Calculated accuracy, precision, recall, and F1-score to understand how well the LSTM model performs on sentiment classification.\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "66ZTpRRUXNxf"
+      }
+    }
+  ]
+}
