@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyNwNzcC8Q+W88exE91ZvcMN",
+      "authorship_tag": "ABX9TyNKSXUMRhyRz8oa/2KPP4ho",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -1309,9 +1309,10 @@
     {
       "cell_type": "markdown",
       "source": [
-        "The LSTM-based model built for this sentiment analysis task performed well in classifying Amazon product reviews as positive or negative. After thorough preprocessing—including tokenization, stopword removal, and lemmatization—the cleaned text was transformed using both traditional vectorization methods (CountVectorizer and TF-IDF) and an embedding approach through Keras Tokenizer. The LSTM model was trained on padded sequences and achieved solid results, with accuracy, precision, recall, and F1-score indicating that it successfully learned to identify sentiment patterns in the text.\n",
+        "The LSTM-based model built for this sentiment analysis task performed well in classifying Amazon product reviews as positive or negative. After thorough preprocessing—including tokenization, stopword removal, and lemmatization—the cleaned text was transformed using both traditional vectorization methods (CountVectorizer and TF-IDF) and an embedding approach through Keras Tokenizer. The LSTM model was trained on padded sequences and achieved solid results, with accuracy, precision, recall, and F1-scores suggesting it effectively learned sentiment patterns in the text.\n",
         "\n",
-        "While the model performed adequately, there is room for improvement. The dataset was relatively small and balanced, which may limit generalizability. Future work could involve training on a larger, more diverse dataset, experimenting with pre-trained word embeddings (like GloVe), or incorporating attention mechanisms for better context handling. Additionally, tuning hyperparameters and adding early stopping or\n"
+        "However, the metrics were notably high, which may indicate overfitting—especially given the small dataset size and the lack of class weighting or sampling to address potential class imbalance. This could cause the model to favor one class over the other. Future improvements could include incorporating weighted loss functions, experimenting with pre-trained embeddings such as GloVe, or integrating attention mechanisms for deeper context handling. Adding callbacks like early stopping and training on a more diverse dataset would also support better generalization to real-world data.\n",
+        "\n"
       ],
       "metadata": {
         "id": "l68whP4xh6De"
