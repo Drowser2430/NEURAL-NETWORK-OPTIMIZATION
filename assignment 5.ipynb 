@@ -4,7 +4,7 @@
   "metadata": {
     "colab": {
       "provenance": [],
-      "authorship_tag": "ABX9TyOQAHKnarV+5czxjraphB2k",
+      "authorship_tag": "ABX9TyNwNzcC8Q+W88exE91ZvcMN",
       "include_colab_link": true
     },
     "kernelspec": {
@@ -28,7 +28,7 @@
     },
     {
       "cell_type": "code",
-      "execution_count": 5,
+      "execution_count": null,
       "metadata": {
         "colab": {
           "base_uri": "https://localhost:8080/",
@@ -265,7 +265,7 @@
         "id": "50H4JvTL2OMj",
         "outputId": "3d799b8b-6186-43bf-ea4d-f22f36088af4"
       },
-      "execution_count": 6,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "execute_result",
@@ -567,7 +567,7 @@
         "id": "Z0MiwwFv6uM4",
         "outputId": "0d34ecf6-9ebb-451a-ea2c-2895aa5c5f16"
       },
-      "execution_count": 7,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -602,7 +602,7 @@
         "id": "V_FKjdBRcyut",
         "outputId": "ff845e28-6754-465c-f188-4c16e516313a"
       },
-      "execution_count": 8,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -652,7 +652,7 @@
         "id": "CbghdWxFcKIx",
         "outputId": "2c1826ca-e565-4c7d-eeac-070ed6fe8f4f"
       },
-      "execution_count": 9,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "execute_result",
@@ -984,7 +984,7 @@
         "id": "VeR3aAh6fV-G",
         "outputId": "0f3e5553-baa8-4898-984e-8e129c609882"
       },
-      "execution_count": 10,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -1016,7 +1016,7 @@
         "id": "cG88Mf6QYoOh",
         "outputId": "4d31fe07-dfd2-4406-e3b0-f2bb9ed7bc41"
       },
-      "execution_count": 13,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "display_data",
@@ -1129,7 +1129,7 @@
         "id": "LdGOKJJeTSyJ",
         "outputId": "5c831e0b-8c08-4e49-f869-992dfd647396"
       },
-      "execution_count": 11,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -1281,7 +1281,7 @@
         "id": "1j0Bb0LNV8wn",
         "outputId": "1e3e9df3-328b-46e4-bbe2-b6897a3a418d"
       },
-      "execution_count": 12,
+      "execution_count": null,
       "outputs": [
         {
           "output_type": "stream",
@@ -1304,6 +1304,17 @@
       ],
       "metadata": {
         "id": "66ZTpRRUXNxf"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "The LSTM-based model built for this sentiment analysis task performed well in classifying Amazon product reviews as positive or negative. After thorough preprocessing—including tokenization, stopword removal, and lemmatization—the cleaned text was transformed using both traditional vectorization methods (CountVectorizer and TF-IDF) and an embedding approach through Keras Tokenizer. The LSTM model was trained on padded sequences and achieved solid results, with accuracy, precision, recall, and F1-score indicating that it successfully learned to identify sentiment patterns in the text.\n",
+        "\n",
+        "While the model performed adequately, there is room for improvement. The dataset was relatively small and balanced, which may limit generalizability. Future work could involve training on a larger, more diverse dataset, experimenting with pre-trained word embeddings (like GloVe), or incorporating attention mechanisms for better context handling. Additionally, tuning hyperparameters and adding early stopping or\n"
+      ],
+      "metadata": {
+        "id": "l68whP4xh6De"
       }
     }
   ]
